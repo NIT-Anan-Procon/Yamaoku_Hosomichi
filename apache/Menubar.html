@@ -1,0 +1,40 @@
+<font size="5" color="black">運営</font>
+<li><a href="listup.html">選手の安全確認</a></li>
+<li><a href="playerlistup.php">選手の検出状況</a></li>
+<li><a href="highlight.html">各ポイント直近通過時間</a></li>
+<li><a href="searchplayer.html">選手を検索</a></li>
+<li><a href="placelist.php">見張り灯籠設置場所一覧</a></li>
+
+</ul>
+<br>
+
+<font size="5" color="black">セットアップ</font>
+<ul>
+<li><a href="tagrelate.html">選手のタグ登録</a></li>
+<li><a href="setpoint.html">見張り灯籠設置場所の入力</a></li>
+</ul>
+<ul>
+<br>
+<font size="5" color="black">電池異常</font><br><HR/>
+<?php
+$mysqli=mysqli_connect('localhost','root','Keyu3102','test2');                                    //MySQLのtest2へのアクセス
+if (mysqli_connect_errno()) {
+ printf("Connect failed: %s\n", mysqli_connect_error());
+ exit();
+}
+$sql = "SELECT * FROM ne ORDER by place ASC";                                               //テーブルneを選択
+$Result=mysqli_query($mysqli,$sql);                                                                          //結果の代入
+while ($row = mysqli_fetch_assoc($Result)){                                                               //テーブルないすべてのデータを出力するまでループ
+  $place=$row['place'];                                        //最終検出場所をロード
+  $id1= substr($place,0,1);
+  $id2=substr($place,1,1);
+  $placenumber=(hexdec($id1))*2+(hexdec($id2)+1);                                               //placeのIDをナンバーに変える
+  $battery=$row['battery'];
+  if($battery=="1"){
+    echo "<font color=\"red\" size=\"4\">見張り灯籠ID:$placenumber       </font><input type=\"button\" value=\"消去 \" onClick=\"document.location='batteryreset.php?place=\'$place\'';\"><br>";
+  }
+}
+
+$mysqli->close();
+?>
+<HR/>

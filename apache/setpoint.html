@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>データを入力する</title>
+<meta charset="utf-8">
+<link rel="stylesheet" type="text/css" href="Menu.css">
+</head>
+<body>
+<div>
+  <h1 style ="text-align:center;background-color:#111111; color:white;box-shadow: 0px 10px 8px rgba(2,2,0,0.5);">やまおくのほそみち管理ページ </h4>
+  <!--text-align:center--場所（センター）__background-color:#111111--背景色(黒)__color:white--文字の色__box-shadow (横への影)px (縦方向への影)px (影のぼかし具合)px rgba(色)-->
+</div>
+<dev id="container">
+  <div id="menu">
+    <div id="left">
+    <?php include ('Menubar.html'); ?>
+  </div>
+  <div id="container">
+  <h1 style="color:black">座標データの入力</h1>
+  <form action="setpoint.php" method="POST" autocomplete="off" style="color:black">
+		<label for="latitude">緯度</label>
+		<input type="text" id="latitude" name="x" size="20" readonly="readonly"/>
+		<label for="longitude">経度</label>
+		<input type="text" id="longitude" name="y" size="20" readonly="readonly"/>
+    <label for="BLE受信機">見張り灯籠設置場所</label>
+    <select name="place">
+      <option value="">場所番号</option>
+      <option value="00">1</option>
+      <option value="01">2</option>
+      <option value="10">3</option>
+      <option value="11">4</option>
+      <option value="20">5</option>
+      <option value="21">6</option>
+      <option value="30">7</option>
+      <option value="31">8</option>
+      <option value="40">9</option>
+      <option value="41">10</option>
+      <option value="50">11</option>
+      <option value="51">12</option>
+      <option value="60">13</option>
+      <option value="61">14</option>
+      <option value="70">15</option>
+      <option value="71">16</option>
+      <option value="80">17</option>
+      <option value="81">18</option>
+      <option value="90">19</option>
+      <option value="91">20</option>
+      <option value="a0">21</option>
+      <option value="a1">22</option>
+      <option value="b0">23</option>
+      <option value="b1">24</option>
+      <option value="c0">25</option>
+      <option value="c1">26</option>
+      <option value="d0">27</option>
+      <option value="d1">28</option>
+      <option value="e0">29</option>
+      <option value="e1">30</option>
+      <option value="f0">31</option>
+      <option value="f1">32</option>
+    </select><br>
+    <label for="time">通過予想時間:</label>
+    <input type="number" name="time" size="20">
+    <label for="yellowtime">異常検出時間:</label>
+    <input type="number" name="yellowtime" size="20">
+    <input type="submit" value="座標セット">
+	</form>
+	<div id="map" style="width:630px;height:600px;">
+	</div>
+  <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyBf_Oxw8v8izVcB45rg7lORSm7QgmScJbA&sensor=true"></script>
+	<script type="text/javascript">
+
+  // ページ読み込み完了時に実行する関数
+  function initialize() {
+
+	   // 初期位置(アスティとくしま)
+	    var Point = new google.maps.LatLng(34.052808692654054,134.56277555015185);
+
+	     // マップ表示
+	      var map = new google.maps.Map(document.getElementById("map"), {
+		        center: Point,
+		        zoom:8,                                                                                                                                                     //ズーム倍率
+		mapTypeId: google.maps.MapTypeId.ROADMAP
+	 });
+
+	  // ドラッグできるマーカーを表示
+	   var marker = new google.maps.Marker({
+		     position: Point,
+		       title: "見張り灯籠",
+  		draggable: true
+	   });
+	    marker.setMap(map)	;
+
+	     // マーカーのドロップ（ドラッグ終了drag end)時のイベント
+	      google.maps.event.addListener( marker, 'dragend', function(ev){
+		    document.getElementById('latitude').value = ev.latLng.lat();
+  		   document.getElementById('longitude').value = ev.latLng.lng();
+	      });
+  }
+  // ONLOADイベントにセット
+  window.onload = initialize();
+</script>
+</div>
+<div class-"clear"></div>
+</html>

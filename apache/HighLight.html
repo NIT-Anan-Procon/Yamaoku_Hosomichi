@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>直近5人</title>
+<meta charset="utf-8">
+<link rel="stylesheet" type="text/css" href="Menu.css">
+</head>
+<body>
+<div>
+  <h1 style ="text-align:center;background-color:#111111; color:white;box-shadow: 0px 10px 8px rgba(2,2,0,0.5);">やまおくのほそみち管理ページ </h4>
+  <!--text-align:center--場所（センター）__background-color:#111111--背景色(黒)__color:white--文字の色__box-shadow (横への影)px (縦方向への影)px (影のぼかし具合)px rgba(色)-->
+</div>
+<dev id="container">
+  <div id="menu">
+    <div id="left">
+    <?php include ('Menubar.html'); ?>
+  </div>
+</div>
+<dev id="container">
+<body>
+  <?php
+  $mysqli=mysqli_connect('localhost','root','Keyu3102','test2');                                    //MySQLのtest2へのアクセス
+  if (mysqli_connect_errno()) {
+   printf("Connect failed: %s\n", mysqli_connect_error());
+   exit();
+}
+  $sql = "SELECT * FROM ne \n ORDER BY place ASC";                                               //テーブルneを選択
+  $Result=mysqli_query($mysqli,$sql);                                                                          //結果の代入
+  while ($row = mysqli_fetch_assoc($Result)){                                                               //テーブルないすべてのデータを出力するまでループ
+    $place=$row['place'];
+    $id1= substr($place,0,1);
+    $id2=substr($place,1,1);
+    $placenumber=(hexdec($id1))*2+(hexdec($id2)+1);                                               //placeのIDをナンバーに変える
+    echo "<h3>灯籠番号:",$placenumber,"</h3>";
+    //echo "NPoint:",$row['NPoint'],"<br>";
+    $pointx=$row['NPoint'];                                                                                             //GoogleMapの埋め込み緯度
+    //echo "EPoint:",$row['EPoint'],"<br>";
+    $pointy=$row['EPoint'];                                                                                            //GoogleMapの埋め込み経度
+    echo '<iframe src="http://maps.google.co.jp/maps?q=',"$pointx,$pointy",'&output=embed&t=m&z=16&hl=ja" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" width="600" height="450"></iframe><br>';    //GoogleMapの埋め込み
+
+    $sqlplayer="SELECT * FROM log WHERE place=$row[place] \n ORDER BY time  DESC";
+  //  echo "sqlplayer:", $sqlplayer, "<br>";                                                                    //デバッグ用
+    $Resultplayer=mysqli_query($mysqli,$sqlplayer);
+    $count=1;
+    while (($rowplayer = mysqli_fetch_assoc($Resultplayer) )&& $count<=5){            //まとまりの解釈が問題を起こしていたため1つ目の条件を（ ）で囲っておく
+      //echo "rowplayer:",$rowplayer["tagid"],"<br>";                                                   //デバッグ用
+      $entryidsql="SELECT * FROM relate WHERE tagid='$rowplayer[tagid]'";
+      //echo "entryidsql:$entryidsql<br>";                                                                     //デバッグ用
+      $resentryid=mysqli_query($mysqli,$entryidsql);
+      $entryid=mysqli_fetch_assoc($resentryid) ;
+      echo "エントリーID--\"$entryid[id]\"" ,"_____通過時刻--\"$rowplayer[time]\"<br>";
+      $count++;
+    }
+    echo "<a href=placeplayer.php?placeid='$row[place]' target=\"_blank\">この灯籠の通過リストを全て表示</a>";
+    echo "<HR />";
+  }
+  $mysqli->close();
+  ?>
+</body>
+</html>
