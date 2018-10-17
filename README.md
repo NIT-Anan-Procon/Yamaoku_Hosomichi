@@ -7,10 +7,10 @@
 /ultrasonic_sensor/
 ## BLE Nano
 BLEタグ検出
-/scan_peerAddr_LAST/
+/BLE Nano/
 ## TWELITE dip
 ZigBee通信
 /TWELITE/
 ## Webサイト
 やまおくのほそみち管理サイト
-/server/
+/apache/
